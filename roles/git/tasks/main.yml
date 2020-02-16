@@ -1,0 +1,6 @@
+---
+- name: install git
+  copy:
+    src: gitconfig
+    dest: ~/.gitconfig
+

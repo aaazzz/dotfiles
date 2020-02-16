@@ -1,0 +1,197 @@
+# UTF-8に設定
+export LANG=ja_JP.UTF-8
+# プロンプト
+autoload colors
+colors
+
+PROMPT="
+ %{${fg[yellow]}%}%~%{${reset_color}%} 
+[%n]$ "
+
+PROMPT2='[%n]>'
+
+#bindkey -v
+
+# 履歴
+## 履歴を保存するファイル
+HISTFILE="$HOME/.zsh_history"
+## 履歴の件数
+HISTSIZE=10000000
+SAVEHIST=10000000
+function history-all { history -E 1 }
+## 先頭にスペースを入れると履歴に残さない
+setopt hist_ignore_space
+## 履歴の検索
+autoload history-search-end
+## 重複した履歴を保存しない
+setopt hist_ignore_dups
+setopt hist_ignore_all_dups
+## 履歴を共有する
+setopt share_history
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "^P" history-beginning-search-backward-end
+bindkey "^N" history-beginning-search-forward-end
+## pecoでインクリメンタルサーチ
+function peco-select-history() {
+    local tac
+    if which tac > /dev/null; then
+        tac="tac"
+    else
+        tac="tail -r"
+    fi
+    BUFFER=$(history -n 1 |  eval $tac | awk '!a[$0]++' |  peco --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle reset-prompt
+}
+zle -N peco-select-history
+bindkey '^r' peco-select-history
+
+# ^wでの削除を便利にする
+## ここに追加したものは文字として認識されず、区切り文字となる。
+## たとえば、この中に_は含まれない
+export WORDCHARS='*?.[]~-=&;!#$%^(){}<>' 
+
+# rm *で確認するのを待つ
+setopt RM_STAR_WAIT
+
+# Ctrl+Dでzshを終了しない
+setopt ignore_eof
+
+# '#' 以降をコメントとして扱う
+setopt interactive_comments
+
+## pushhdで履歴を残さない
+setopt auto_pushd
+setopt pushd_ignore_dups
+
+# 補完候補を詰めて表示する
+setopt list_packed 
+
+# ターミナルのタイトル
+case "${TERM}" in
+kterm*|xterm)
+    precmd() {
+        echo -ne "\033]0;${USER}@${HOST}\007"
+    }
+    ;;
+esac
+
+# 色の設定
+export LSCOLORS=gxfxxxxxcxxxxxxxxxgxgx
+export LS_COLORS='di=01;36:ln=01;35:ex=01;32'
+zstyle ':completion:*' list-colors 'di=36' 'ln=35' 'ex=32'
+
+# lessなどで開くeditorをvimにする
+export EDITOR="vim"
+
+# grepでマッチした部分に色
+export GREP_OPTIONS="--color=auto"
+
+# Autocomplete
+autoload -U compinit
+compinit -C
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+autoload -Uz zmv
+
+# bashから引き継ぎ
+
+##
+# Your previous /Users/matsuiakira/.bash_profile file was backed up as /Users/matsuiakira/.bash_profile.macports-saved_2012-04-07_at_14:35:39
+##
+
+# MacPorts Installer addition on 2012-04-07_at_14:35:39: adding an appropriate PATH variable for use with MacPorts.
+# Finished adapting your PATH environment variable for use with MacPorts.
+
+export CLICOLOR=YES
+# JAVA_HOME=$(/usr/libexec/java_home)
+# export JAVA_HOME
+# 
+# PATH=${JAVA_HOME}/bin:$PATH
+# export PATH
+## Aliases for app
+alias javac='javac -J-Dfile.encoding=UTF-8'
+alias java='java -Dfile.encoding=UTF-8'
+alias safari='open -a Safari'
+## Aliases for ls
+alias ls='ls -1'
+alias ll='ls -l -t -h'
+alias la='ls -l -t -h -a'
+## Aliases for grep and less
+alias rm='rm -i'
+alias mv='mv -i'
+
+alias vim='/usr/local/bin/vim'
+export CC=/usr/bin/gcc
+
+alias sed='/usr/local/Cellar/gnu-sed/4.2.2/bin/gsed'
+
+alias brew='env PATH=${PATH/\/Users\/${USER}\/\.pyenv\/shims:?/} brew'
+
+#anti mojibake tree
+alias tree='tree -N'
+
+# never show sl
+alias sl='ls'
+
+# make diff colorful
+if [[ -x `which colordiff` ]]; then
+  alias diff='colordiff'
+fi
+
+# # cuda
+# PATH=/usr/local/cuda/bin:$PATH
+# DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
+
+# jRuby
+# now manage jRuby with rvm
+# export PATH=$PATH:/Library/Frameworks/JRuby.framework/Versions/Current/bin
+
+### Added by the Heroku Toolbelt
+export PATH=/usr/local/heroku/bin:$PATH
+
+#RVM
+[ -s ${HOME}/.rvm/scripts/rvm ] && source ${HOME}/.rvm/scripts/rvm
+
+# #MAMP PHP
+# export PATH=/Applications/MAMP/bin/php/php5.5.10/bin:$PATH
+# #MAMP mysql
+# export PATH=/Applications/MAMP/Library/bin:$PATH
+#rbenv
+export PATH=$HOME/.rbenv/bin:$PATH
+eval "$(rbenv init - zsh)"
+
+#pyenv
+export PATH=$HOME/.pyenv/shims:$PATH
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+
+# alias py2='source ~/.pyenv/versions/anaconda3-2.1.0/bin/activate py27'
+# alias py3='source ~/.pyenv/versions/anaconda3-2.1.0/bin/deactivate'
+
+# auto comp after '='
+setopt magic_equal_subst
+
+# diable 'r' command to use R
+disable r
+
+#nodebrew
+export PATH=$HOME/.nodebrew/current/bin:$PATH
+fpath=($HOME/.zsh_fun $fpath)
+
+# zsh立ち上げ時間計測したいときに使う
+# .zshenvも参照
+# if (which zprof > /dev/null) ;then
+#   zprof | less
+# fi
+
+#vimpagerをdefaultのpagerにする
+export PAGER=less
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+eval "$(direnv hook zsh)"
+
+##golang
+export GOPATH=$HOME/_go
+export PATH=$PATH:/usr/local/opt/go/libexec/bin:$GOPATH/bin

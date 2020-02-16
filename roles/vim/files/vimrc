@@ -1,0 +1,241 @@
+if &compatible
+  set nocompatible
+endif
+
+set runtimepath+=~/.vim/dein/repos/github.com/Shougo/dein.vim
+
+call dein#begin(expand('~/.vim/dein'))
+
+  call dein#add('Shougo/dein.vim')
+  call dein#add('Shougo/neocomplete.vim')
+  call dein#add('nanotech/jellybeans.vim')
+  "Tree型のエクスプローラ
+  call dein#add('scrooloose/nerdtree')
+  "python用多機能プラグイン
+  call dein#add('davidhalter/jedi-vim')
+  "補完用プラグイン
+  call dein#add('Shougo/neocomplete.vim')
+  "文法チェック
+  "call dein#add( 'scrooloose/syntastic')
+  " Rails向けのコマンドを提供する
+  call dein#add('tpope/vim-rails')
+  "unite
+  call dein#add('Shougo/unite.vim')
+  "unite-outline
+  call dein#add('Shougo/unite-outline')
+  "vimproc
+  call dein#add('Shougo/vimproc.vim', {
+          \ 'build': {
+          \     'mac': 'make -f make_mac.mak',
+          \     'linux': 'make',
+          \     'unix': 'gmake',
+          \    },
+          \ })
+  "neomru
+  call dein#add('Shougo/neomru.vim')
+  "slimのsyntaxハイライト
+  call dein#add("slim-template/vim-slim")
+  "csv整形
+  call dein#add('vim-scripts/Align')
+  "vimshell
+  call dein#add('Shougo/vimshell.vim')
+  "matchit
+  call dein#add('tmhedberg/matchit')
+  "javascript
+  "まだインストールしただけ。どういう設定があるのか？
+  call dein#add('pangloss/vim-javascript')
+  "git wrapper
+  call dein#add('tpope/vim-fugitive')
+  "選択した文字列を囲う
+  call dein#add('tpope/vim-surround')
+
+call dein#end()
+
+filetype plugin indent on
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"matchit読み込み 
+:source /Users/matsuiakira/.vim/bundle/matchit/plugin/matchit.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""plugin依存設定
+"unite.vim {{{
+  "設定
+  let g:unite_enable_split_vertically = 1 
+  let g:unite_winwidth = 60 
+  let g:unite_split_rule = 'botright'
+
+  "fキーで起動する
+  "<Space> + f --> b|m|o|r|s|g|
+  nmap    <Space>f [unite]
+  "普通のuniteコマンド
+  nnoremap [unite]u  :<C-u>Unite<Space>
+  "各種アクション
+  nnoremap <silent> [unite]b :<C-u>Unite<Space>-horizontal buffer<CR>
+  nnoremap <silent> [unite]m :<C-u>Unite<Space>-horizontal file_mru<CR>
+  nnoremap <silent> [unite]o :<C-u>Unite<Space>outline<CR>
+  nnoremap <silent> [unite]r :<C-u>Unite<Space>register<CR>
+  nnoremap <silent> [unite]s :<C-u>Unite<Space>source<CR>
+  nnoremap <silent> [unite]g :<C-u>Unite<Space>grep -buffer-name=search-buffer<CR>
+  nnoremap <silent> [unite]h :<C-u>UniteResume search-buffer<CR>
+
+  if executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+    let g:unite_source_grep_recursive_opt = ''
+  endif
+" }}}
+
+"カラースキーム
+colorscheme jellybeans
+"シンタックスハイライト
+syntax on
+"タイトルを表示
+set title
+"行番号を表示
+set number
+"折り返さない
+set nowrap
+"encoding
+set encoding=utf-8
+"コマンド、検索パターンを保存する数
+set history=1000
+"カレント行のハイライト
+set cursorline
+"speed up?
+set regexpengine=1
+"新しい行のインデントを現在と同じにする
+set autoindent
+"OSと連携
+set clipboard=unnamed
+"タブの代わりに空白文字を挿入する
+set expandtab
+"シフト移動幅
+set shiftwidth=2
+"行頭の余白内で Tab を打ち込むと、'shiftwidth' の数だけインデントする
+set smarttab
+"ファイル内の <Tab> が対応する空白の数
+set tabstop=2
+"新しい行を作ったときに高度な自動インデントを行う
+"挙動があやしくない？
+"jsで改行するとムダなインデントが付くような。。。
+"set smartindent
+"折り返しは80文字
+"set textwidth=80
+set tw=0
+"IMEをオフ
+set imdisable
+"バックスペースでなんでも消せるようにする
+set backspace=indent,eol,start
+"インクリメンタルサーチを行う
+set incsearch
+"マッチした文字列をハイライト
+set hlsearch
+"検索時に大文字を含んでいたら大/小を区別
+set ignorecase smartcase
+" C-aで0埋め数値をインクリメントできるようにする
+set nf=
+
+"バックアップファイルの作成場所を指定
+set backup
+set backupdir=~/.vimbup
+"スワップファイルの作成場所を指定
+set swapfile
+set directory=~/.vimswp
+"辞書ファイルの読み込み
+set dictionary=~/.vimdict
+
+"ステータス行の指定
+set laststatus=2 
+set statusline=%<%f\ %m%r%h%w
+set statusline+=%{'['.(&fenc!=''?&fenc:&enc).']['.&fileformat.']'}
+set statusline+=%=%l/%L,%c%V%8P
+
+"" インサートモードを強調したい
+" カーソル行を強調表示しない
+set nocursorline
+" 挿入モードの時のみ、カーソル行をハイライトする
+autocmd InsertEnter,InsertLeave * set cursorline!
+
+"NERDTree設定
+"隠しファイルを表示する
+let NERDTreeSHowHidden=1
+"デフォルトでNERDTreeを表示
+"autocmd VimEnter * execute 'NERDTree'
+nnoremap <Leader>t :NERDTree<CR>
+
+"バッファ切替
+nnoremap <silent>bp :bprevious<CR>
+nnoremap <silent>bn :bnext<CR>
+
+"ESCのマッピング
+inoremap <silent> jj <ESC>
+
+"表示行単位での移動
+nnoremap j gj
+nnoremap k gk
+"行単位移動の保存
+nnoremap gj j
+nnoremap gk k
+
+"normal modeで;と:を入れ替える
+nnoremap ; :
+nnoremap : ;
+"visual modeで;と:を入れ替える
+vnoremap ; :
+vnoremap : ;
+
+"exモード無効化
+nnoremap Q <Nop>
+
+"行頭、行末効率化
+nnoremap <Space>h ^
+nnoremap <Space>l $
+nnoremap <Space>/ *
+
+vnoremap <Space>h ^
+vnoremap <Space>l $
+vnoremap <Space>/ *
+
+"括弧後エンターで補完
+" コピペすると動作が変なのでいったんコメントアウト
+" inoremap {<Enter> {}<Left><CR><ESC><S-o>
+" inoremap [<Enter> []<Left><CR><ESC><S-o>
+" inoremap (<Enter> ()<Left><CR><ESC><S-o>
+
+"連続コピペに対応
+"http://qiita.com/fukajun/items/bd97a9b963dae40b63f5
+vnoremap <silent> <C-p> "0p<CR>
+"自動コメント無効
+augroup auto_comment_off
+    autocmd!
+    autocmd BufEnter * setlocal formatoptions-=r
+    autocmd BufEnter * setlocal formatoptions-=o
+augroup END
+
+"csvファイルハイライト「:Csv [数値]」 と打つと、csvファイルで[数値]カラム目のハイライトをしてくれる
+function! CSVH(x)
+   execute 'match Keyword /^\([^,]*,\)\{'.a:x.'}\zs[^,]*/'
+   execute 'normal ^'.a:x.'f,'
+endfunction
+command! -nargs=1 Csv :call CSVH(<args>))
+
+" 「:Csvs」と打つと、現在のカラムをハイライトしてくれる
+command! Csvs :call CSVH(strlen(substitute(getline('.')[0:col('.')-1], "[^,]", "", "g"))))
+
+" Csv系のコマンドのハイライトを消す
+command! Csvn execute 'match none'
+" Csvsを置き換える
+nnoremap <Space>csv :Csvs<CR>
+
+" .vimrcを開くためのショートカット
+nnoremap <Leader>v :e ~/.dotfiles/roles/vim/files/vimrc<CR>
+" .vimrcを読み込むためのショートカット
+nnoremap <Leader>s :source ~/.dotfiles/roles/vim/files/vimrc<CR>
+" Alignで日本語を使うために文字幅を与える
+let g:Align_xstrlen = 3
+" 日本語用vim設定
+nnoremap あ a
+nnoremap い i
+nnoremap う u
+nnoremap お o
+nnoremap ｓ s
+nnoremap ｃ c

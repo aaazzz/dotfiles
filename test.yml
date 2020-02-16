@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python2
+  roles:
+    - zsh
+    - vim
+    - git

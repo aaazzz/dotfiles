@@ -1,0 +1,30 @@
+# This is Git's per-user configuration file.
+[core]
+# Please adapt and uncomment the following lines:
+  user = aaazzz
+	email = akiramazvn@gmail.com
+[core]
+	excludesfile = /Users/matsuiakira/.gitignore_global
+	quotepath = false
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[user]
+	name = aaazzz
+	email = akiramazvn@gmail.com
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[merge]
+	tool = vimdiff
+[mergetool]
+	prompt = false
+[color]
+	ui = true
+[alias]
+  log-graph = log --graph --date=short --pretty=format:'%Cgreen%h %cd %Cblue%cn %Creset%s'
+  cm = commit -m
